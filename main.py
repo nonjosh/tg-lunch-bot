@@ -12,7 +12,7 @@ def getTime():
     return current_time
 
 def check_within_weekdays():
-    return 1<=datetime.today().weekday()<=5
+    return 1<=datetime.today().isoweekday()<=5
 
 def check_time2decide():
     now = datetime.now()
