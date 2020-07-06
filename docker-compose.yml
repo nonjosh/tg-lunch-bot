@@ -1,9 +1,11 @@
 version: "3"
 services:
   app:
+    container_name: hko-lunch-bot
     build: .
     environment:
       - MSG_TIME=12:15
       - TOKEN=<your token>
       - CHAT_ID=<your chat_id>
     restart: always
+    network_mode: bridge
