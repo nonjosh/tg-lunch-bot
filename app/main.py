@@ -46,5 +46,5 @@ if __name__ == '__main__':
     printT('The decision time on weekdays: {}'.format(time2decide))
     # send_channel("Program Start!")
     
-    recur_check()
     # send_decision()
+    recur_check()

@@ -15,6 +15,8 @@ choose either option below to run the application
 3. Start the application with the following command:
 
 ```sh
+cd app/
+pip install -r requirements.txt
 python main.py
 ```
 
