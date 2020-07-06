@@ -2,10 +2,13 @@ import random
 
 LIST_PATH = "decide_lunch/list.txt"
 
-def getList():
+def getTxt():
     my_file = open(LIST_PATH, "r")
     content = my_file.read()
-    content_list = content.split("\n")
+    return content
+
+def getList():
+    content_list = getTxt().split("\n")
     return content_list
 
 def getDecision():

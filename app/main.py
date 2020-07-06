@@ -1,8 +1,10 @@
 from datetime import datetime, time
 from threading import Timer
-from tg.bot import send_channel
-from decide_lunch import getDecision
+from tg.bot import send_channel, TOKEN
+from decide_lunch import getDecision, getTxt
 import os
+from telegram.ext import Updater, CommandHandler
+from telegram import ParseMode
 
 time2decide = os.environ.get('MSG_TIME', '12:15')
 
@@ -40,11 +42,48 @@ def send_decision():
     msg = decision_msg(decision_today)
     send_channel(msg)
 
+def start_updater():
+    def showAllCommands(update, context):
+        msg = """\
+/reroll
+/list, /ls, /ps
+/add - <COMING SOON>
+/remove, /rm - <COMING SOON>
+"""        
+        update.message.reply_text(msg)
+    
+    def reroll(update, context):
+        decision_today = getDecision()
+        update.message.reply_text(text=decision_msg(decision_today), 
+                    parse_mode=ParseMode.HTML)
+
+    def showlist(update, context):
+        msg = getTxt()
+        update.message.reply_text(msg)
+    
+    def comingsoon(update, context):
+        msg = 'COMING SOON'
+        update.message.reply_text(msg)
+    
+    updater = Updater(TOKEN, use_context=True)
+
+    updater.dispatcher.add_handler(CommandHandler(('help', 'start'), showAllCommands))
+    updater.dispatcher.add_handler(CommandHandler('reroll', reroll))
+    updater.dispatcher.add_handler(CommandHandler(('list', 'ls', 'ps'), showlist))
+    # TODO add restaurants
+    updater.dispatcher.add_handler(CommandHandler('add', comingsoon))
+    # TODO remove restaurants
+    updater.dispatcher.add_handler(CommandHandler(('remove', 'rm'), comingsoon))
+
+    updater.start_polling()
+    # updater.idle()
+
 if __name__ == '__main__':
     
     printT('Program Start!')
     printT('The decision time on weekdays: {}'.format(time2decide))
     # send_channel("Program Start!")
     
+    start_updater()
     # send_decision()
     recur_check()
