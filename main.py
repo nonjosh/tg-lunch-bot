@@ -4,15 +4,18 @@ from tg.bot import send_channel
 from decide_lunch import getDecision
 import os
 
-time2decide = os.environ.get("MSG_TIME", '12:15')
+time2decide = os.environ.get('MSG_TIME', '12:15')
 
-def getTime():
+def getDateTime():
     now = datetime.now()
-    current_time = now.strftime("%H:%M:%S")
+    current_time = now.strftime('%Y/%m/%d %H:%M:%S')
     return current_time
 
+def printT(msg):
+    print('[{}] {}'.format(getDateTime(), msg))
+
 def check_within_weekdays():
-    return 1<=datetime.today().isoweekday()<=5
+    return 1 <= datetime.today().isoweekday() <= 5
 
 def check_time2decide():
     now = datetime.now()
@@ -30,14 +33,14 @@ def recur_check():
 
 def send_decision():
     decision_today = getDecision()
-    print(getTime(), decision_today)
-    msg = f'投咩票啫?\n極權bot決定今日lunch食:\n<i><u><b>%s</b></u></i>' % decision_today
+    printT(decision_today)
+    msg = '投咩票啫?\n極權bot決定今日lunch食:\n<i><u><b>{}</b></u></i>'.format(decision_today)
     send_channel(msg)
 
 if __name__ == '__main__':
     
-    print(getTime(), "Program Start!")
-    print("The decision time on weekdays: ", time2decide)
+    printT('Program Start!')
+    printT('The decision time on weekdays: {}'.format(time2decide))
     # send_channel("Program Start!")
     
     recur_check()
