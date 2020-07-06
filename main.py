@@ -31,10 +31,13 @@ def recur_check():
     t = Timer(timer_interval_sec, recur_check)
     t.start()
 
+def decision_msg(decision_today):
+    return '根據沉默大多數愛好和平同事的主流意見\n今日lunch決定食:\n<i><u><b>{}</b></u></i>'.format(decision_today)
+
 def send_decision():
     decision_today = getDecision()
     printT(decision_today)
-    msg = '投咩票啫?\n極權bot決定今日lunch食:\n<i><u><b>{}</b></u></i>'.format(decision_today)
+    msg = decision_msg(decision_today)
     send_channel(msg)
 
 if __name__ == '__main__':
