@@ -7,6 +7,18 @@ from telegram.ext import Updater, CommandHandler
 from telegram import ParseMode
 
 time2decide = os.environ.get('MSG_TIME', '12:15')
+count_dict = dict()
+
+
+def get_user_info(update):
+    user = update.message.from_user
+    #msg  = 'You talk with user {} and his user ID: {} '.format(user['username'], user['id'])
+    user_id = user['id']
+    user_name = user['username']
+    first_name = user['first_name']
+    last_name = user['last_name']
+    return user_id, first_name, last_name, user_name
+
 
 def getDateTime():
     now = datetime.now()
@@ -24,12 +36,12 @@ def check_time2decide():
     return now.strftime("%H:%M") == time2decide
 
 def recur_check():
-    # Decide and send message at {{time2decide}} in weekdays
-    if check_time2decide() and check_within_weekdays():
-       send_decision()
+    global count_dict 
+    count_dict = dict()
+    send_decision()
 
     # Repeat every minutes
-    timer_interval_sec = 60
+    timer_interval_sec = 86400
     t = Timer(timer_interval_sec, recur_check)
     t.start()
 
@@ -43,19 +55,37 @@ def send_decision():
     send_channel(msg)
 
 def start_updater():
-    def showAllCommands(update, context):
-        msg = """\
-/reroll
-/list, /ls, /ps
-/add - <COMING SOON>
-/remove, /rm - <COMING SOON>
-"""        
-        update.message.reply_text(msg)
-    
+    global count_dict
+
     def reroll(update, context):
-        decision_today = getDecision()
-        update.message.reply_text(text=decision_msg(decision_today), 
-                    parse_mode=ParseMode.HTML)
+        user_id, first_name, last_name, user_name = get_user_info(update)
+        print("========== user_id ==========")
+        print(str(user_id))
+        print("========== count_dict ==========")
+        for key, value in count_dict.items():
+            print(key, value)
+        
+        
+
+        if user_id in count_dict:
+            print("user_id In dict : " + str(user_id))
+            count_dict[user_id] = count_dict[user_id] + 1
+        else:
+            print(" user_id Not in dict : " + str(user_id))
+            count_dict[user_id] = 1
+
+        print("========== count_dict[user_id] ==========")
+        print(str(count_dict[user_id]))
+
+        if( int(count_dict[user_id]) > 1):
+            print(" counter > 1")
+            update.message.reply_text(text="滚动不能 , 每天只可重新滚动一次" , parse_mode=ParseMode.HTML)
+        else:
+            print("counter < = 1")
+            decision_today = getDecision()
+            update.message.reply_text(text=decision_msg(decision_today), parse_mode=ParseMode.HTML)
+
+        
 
     def showlist(update, context):
         msg = getTxt()
@@ -67,7 +97,6 @@ def start_updater():
     
     updater = Updater(TOKEN, use_context=True)
 
-    updater.dispatcher.add_handler(CommandHandler(('help', 'start'), showAllCommands))
     updater.dispatcher.add_handler(CommandHandler('reroll', reroll))
     updater.dispatcher.add_handler(CommandHandler(('list', 'ls', 'ps'), showlist))
     # TODO add restaurants

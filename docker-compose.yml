@@ -5,7 +5,7 @@ services:
     build: .
     environment:
       - MSG_TIME=12:15
-      - TOKEN=<your token>
-      - CHAT_ID=<your chat_id>
+      - TOKEN=1332942054:AAFrASzNpBqrCoiVzTGn65YKCQ7prHEvz98
+      - CHAT_ID=-1001210702490
     restart: always
     network_mode: bridge
