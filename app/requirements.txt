@@ -1,2 +1,6 @@
 requests==2.23.0
 python-telegram-bot==12.7
+pytz
+beautifulsoup4
+lxml
+python-dotenv
