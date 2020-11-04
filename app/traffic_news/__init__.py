@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 def grep_traffic():
-    logger.info("calling : grep_traffic" )
+    logger.info("calling : grep_traffic")
     url = 'https://www.881903.com/news/traffic'
     r = requests.get(url)
     if r.status_code == requests.codes.ok:

@@ -5,7 +5,15 @@ from telegram import ParseMode
 from datetime import datetime, time
 from pytz import timezone
 from threading import Timer
-import os, sys, inspect
+import os, sys, inspect, traceback
+
+
+from decide_lunch import getLunchDecision, getTxt
+from traffic_news import grep_traffic
+from setting import BotConfig, ChannelConfig, TimestampConfig, ReplyStrMap
+from bot_basic_handler import *
+tz = timezone(TimestampConfig.time_zone)
+
 
 import logging, logging.config
 logging.basicConfig(
@@ -16,11 +24,6 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S',
 )
 logger = logging.getLogger(__name__)
-
-from decide_lunch import getLunchDecision, getTxt
-from traffic_news import grep_traffic
-from setting import BotConfig, ChannelConfig, TimestampConfig, ReplyStrMap
-from bot_basic_handler import *
 
 
 TOKEN = BotConfig.token
@@ -53,8 +56,7 @@ def boardcast(update, context):
 
 
 def filter_handler(update, context):
-    # print(update)
-    print("counting")
+    print(" Function : " + str(inspect.currentframe().f_code.co_name))
     content = str(update.message.text)
     print(content)
     if(content.startswith('/')):
@@ -87,16 +89,27 @@ def reroll(update, context):
 
 
 def traffic(update, context):
-    print(" Function : " + str(inspect.currentframe().f_code.co_name))
-    content = grep_traffic()
-    update.message.reply_text(text=content, parse_mode=ParseMode.HTML)     
+    try:
+        print("Group Chat Id : {}".format(update.message.chat.id))
+        print(" Function : " + str(inspect.currentframe().f_code.co_name))
+        content = grep_traffic()
+        msg_json = update.message.reply_text(text=content, parse_mode=ParseMode.HTML)     
+        print(msg_json['message_id'])
+        bot.pinChatMessage(chat_id = update.message.chat.id, message_id = msg_json['message_id'] )
+    except Exception:
+        error_msg = traceback.format_exc(limit=None, chain=True)
+        #traceback.print_exc()
+        print(error_msg)
+        #update.message.reply_text(error_msg)
+
 
 def showlist(update, context):
     print(" Function : " + str(inspect.currentframe().f_code.co_name))
     msg = getTxt()
     update.message.reply_text(msg)
 
-
+def getCommands(update, context):
+    print(bot.getMyCommands())
 
 def recur_check():
     current_time_stamp = get_hhmm()
@@ -128,6 +141,9 @@ if __name__ == '__main__':
     # boardcast and text filter
     updater.dispatcher.add_handler(CommandHandler('boardcast', boardcast))
     updater.dispatcher.add_handler(MessageHandler(Filters.text, filter_handler))
+
+
+    updater.dispatcher.add_handler(CommandHandler('gc', getCommands))
 
     updater.start_polling()
     recur_check()
