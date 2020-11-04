@@ -4,8 +4,7 @@ services:
     container_name: hko-lunch-bot
     build: .
     environment:
-      - MSG_TIME=12:15
-      - TOKEN=1332942054:AAFrASzNpBqrCoiVzTGn65YKCQ7prHEvz98
-      - CHAT_ID=-1001210702490
+      - EXAMPLE_TOKEN=1332942054:AAFrASzNpBqrCoiVzTGn65YKCQ7prHEvz98
+      - EXAMPLE_CONTROLLER_ID=-400962750
     restart: always
     network_mode: bridge

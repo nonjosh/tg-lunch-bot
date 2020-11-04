@@ -29,6 +29,12 @@ python main.py
 docker-compose up -d
 ```
 
+### Rebuild image 
+1, `docker-compose build` or 
+2, `docker-compose up --build
+3, docker-compose up -d --build 
+4, docker-compose up -d
+5, docker logs --tail -tf hko-lunch-bot
 ## Development Tips
 
 ### How to ignore changed files (temporarily)

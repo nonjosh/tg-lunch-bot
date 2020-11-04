@@ -1,4 +1,6 @@
+# comment
 **/.git
 **/.DS_Store
 **/node_modules
+**/app.log
 **/.vscode
