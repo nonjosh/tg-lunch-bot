@@ -1,6 +1,8 @@
 from datetime import datetime, time
 from pytz import timezone
 from setting import BotConfig, ChannelConfig, TimestampConfig, ReplyStrMap
+import logging, logging.config
+logger = logging.getLogger(__name__)
 
 def get_user_info(update):
     
@@ -20,6 +22,7 @@ def getDateTime():
 
 def printT(msg):
     print('[{}] {}'.format(getDateTime(), msg))
+    logger.info('[{}] {}'.format(getDateTime(), msg) )
 
 def get_hhmm():
     hhmm = datetime.now(timezone(TimestampConfig.time_zone)).strftime("%H:%M")

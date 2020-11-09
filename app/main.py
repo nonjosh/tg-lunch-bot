@@ -67,7 +67,8 @@ def filter_handler(update, context):
     elif "DLLM" in content:
         update.message.reply_text(ReplyStrMap.foul_1)
     else:
-        update.message.reply_text(ReplyStrMap.too_noisy)
+        pass
+        #update.message.reply_text(ReplyStrMap.too_noisy)
     
 
 def reroll(update, context):
