@@ -15,6 +15,7 @@ def get_user_info(update):
     print("User id : {}".format(user_id))
     return user_id, first_name, last_name, user_name
 
+
 def getDateTime():
     now = datetime.now()
     current_time = now.strftime('%Y/%m/%d %H:%M:%S')

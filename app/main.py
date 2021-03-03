@@ -9,7 +9,8 @@ import os, sys, inspect, traceback
 
 
 from decide_lunch import getLunchDecision, getTxt
-from traffic_news import grep_traffic
+from traffic_news_module import grep_traffic
+from weather_module import grep_weather
 from setting import BotConfig, ChannelConfig, TimestampConfig, ReplyStrMap
 from bot_basic_handler import *
 tz = timezone(TimestampConfig.time_zone)
@@ -96,12 +97,29 @@ def traffic(update, context):
         content = grep_traffic()
         msg_json = update.message.reply_text(text=content, parse_mode=ParseMode.HTML)     
         print(msg_json['message_id'])
-        bot.pinChatMessage(chat_id = update.message.chat.id, message_id = msg_json['message_id'] )
+        #bot.pinChatMessage(chat_id = update.message.chat.id, message_id = msg_json['message_id'] )
     except Exception:
         error_msg = traceback.format_exc(limit=None, chain=True)
         #traceback.print_exc()
         print(error_msg)
         #update.message.reply_text(error_msg)
+
+def weather(update, context):
+    try:
+        print("Group Chat Id : {}".format(update.message.chat.id))
+        print(" Function : " + str(inspect.currentframe().f_code.co_name))
+        content = grep_weather()
+        msg_json = update.message.reply_text(text=content, parse_mode=ParseMode.HTML)     
+        print(msg_json['message_id'])
+        #bot.pinChatMessage(chat_id = update.message.chat.id, message_id = msg_json['message_id'] )
+    except Exception:
+        error_msg = traceback.format_exc(limit=None, chain=True)
+        #traceback.print_exc()
+        print(error_msg)
+        #update.message.reply_text(error_msg)
+
+
+
 
 
 def showlist(update, context):
@@ -113,14 +131,19 @@ def getCommands(update, context):
     print(bot.getMyCommands())
 
 def recur_check():
+    global count_dict
     current_time_stamp = get_hhmm()
     if( current_time_stamp == TimestampConfig.time_lunch and check_within_weekdays()):
         logger.info("calling : getLunchDecision" )
         send_channel(getLunchDecision())
+        count_dict = dict()
     #print(TimestampConfig.time_traffic)
-    if(current_time_stamp in TimestampConfig.time_traffic and check_within_weekdays()):
+    if(current_time_stamp in TimestampConfig.time_traffic):
         logger.info("calling : grep_traffic" )
         send_channel(grep_traffic())
+    if(current_time_stamp in TimestampConfig.time_weather):
+        logger.info("calling : grep_weather" )
+        send_channel(grep_weather())
     timer_interval_sec = 60
     t = Timer(timer_interval_sec, recur_check)
     t.start()
@@ -138,6 +161,8 @@ if __name__ == '__main__':
 
     # ------ Traffic Relatated
     updater.dispatcher.add_handler(CommandHandler('traffic', traffic))
+    updater.dispatcher.add_handler(CommandHandler('weather', weather))  
+
 
     # boardcast and text filter
     updater.dispatcher.add_handler(CommandHandler('boardcast', boardcast))

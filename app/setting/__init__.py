@@ -17,7 +17,7 @@ class TimestampConfig:
     time_zone = os.environ.get("TIME_ZONE" , "Asia/Hong_Kong")
     time_lunch = os.environ.get('LUNCH_TIME', '11:30')
     time_traffic = str(os.environ.get('TRAFFIC_TIME', ['07:00', '12:00', '16:30'])).split(",")
-
+    time_weather = str(os.environ.get('WEATHER_TIME', ['07:00', '23:00'])).split(",")
 
 class ReplyStrMap:
     please_reroll = os.environ.get("please_reroll", '')
