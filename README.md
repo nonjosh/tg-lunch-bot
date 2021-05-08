@@ -6,48 +6,33 @@ Randomly decide restaurant for lunch every weekdays.
 
 ## How to use
 
-choose either option below to run the application:
+1. Create a `.env` file in the root of project folder containing the environment variables, 
 
-### Option 1: Python
+    ```
+    TOKEN=<your token here>
+    CHAT_ID=<your chat id here>
+    MSG_TIME=12:15
+    ```
 
-1. Set your `MSG_TIME` in `app/main.py`
-2. Set your `TOKEN` and `CHAT_ID` in `app/tg/config.py`
-3. Start the application with the following command:
+2.  choose either option below to run the application:
 
-```sh
-cd app/
-pip install -r requirements.txt
-python main.py
-```
+    ### Option 1: Python
 
-### Option 2: Docker Compose
+    1. Set your `MSG_TIME` in `app/main.py`
+    2. Set your `TOKEN` and `CHAT_ID` in `app/tg/config.py`
+    3. Start the application with the following command:
 
-1. Set your `MSG_TIME`, `TOKEN` and `CHAT_ID` in `docker-compose.yml`
-2. Start the container with the following command:
+    ```sh
+    cd app/
+    pip install -r requirements.txt
+    python main.py
+    ```
 
-```sh
-docker-compose up -d
-```
+    ### Option 2: Docker Compose
 
-## Development Tips
+    1. Set your `MSG_TIME`, `TOKEN` and `CHAT_ID` in `docker-compose.yml`
+    2. Start the container with the following command:
 
-### How to ignore changed files (temporarily)
-
-Run the following commands to ignore changed `docker-compose.yml` after setting your `MSG_TIME`, `TOKEN` and `CHAT_ID`.
-
-```sh
-git update-index --assume-unchanged docker-compose.yml
-```
-
-So as the python files if you chose to hardcode your environment variables in them.
-
-```sh
-git update-index --assume-unchanged app/main.py
-git update-index --assume-unchanged app/tg/config.py
-```
-
-To revert that ignorance use the following command:
-
-```sh
-git update-index --no-assume-unchanged <file>
-```
+    ```sh
+    docker-compose up -d
+    ```
