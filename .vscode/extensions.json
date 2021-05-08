@@ -1,0 +1,14 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=827846
+    // for the documentation about the extensions.json format
+    "recommendations": [
+        "ms-python.vscode-pylance",
+        "eamodio.gitlens",
+        "ms-azuretools.vscode-docker",
+        "donjayamanne.githistory",
+        "oderwat.indent-rainbow",
+        "njpwerner.autodocstring",
+        "Gruntfuggly.todo-tree",
+        "2gua.rainbow-brackets"
+    ]
+}
