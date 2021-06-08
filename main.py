@@ -8,6 +8,10 @@ import os, sys, inspect
 
 import logging, logging.config
 
+from telegram.update import Update
+from telegram.ext import CallbackContext
+from typing import Dict, Tuple
+
 logging.basicConfig(
     filename="app.log",
     level=logging.INFO,
@@ -26,7 +30,7 @@ TOKEN = BotConfig.token
 chat_id = ChannelConfig.chat_id
 controller_id = ChannelConfig.controller_id
 bot = telegram.Bot(token=TOKEN)
-count_dict = dict()
+count_dict: Dict[str, Tuple[datetime, int]] = dict()
 
 
 def notice_control_room():
@@ -48,14 +52,14 @@ def del_msg(update):
     bot.delete_message(chat_id=str(chat_id), message_id=update.message.message_id)
 
 
-def boardcast(update, context):
+def boardcast(update: Update, context: CallbackContext):
     print("boardcast")
     print(context.args[0])
     msg = context.args[0]
     send_channel(msg)
 
 
-def filter_handler(update, context):
+def filter_handler(update: Update, context: CallbackContext):
     # print(update)
     print("counting")
     content = str(update.message.text)
@@ -71,33 +75,41 @@ def filter_handler(update, context):
         update.message.reply_text(ReplyStrMap.too_noisy)
 
 
-def reroll(update, context):
+def reroll(update: Update, context: CallbackContext):
     print(" Function : " + str(inspect.currentframe().f_code.co_name))
     global count_dict
     user_id, first_name, last_name, user_name = get_user_info(update)
     print(f"User id Reroll : {user_id}")
     if user_id in count_dict:
-        print(f"Count of Reroll : {count_dict[user_id]}")
-        if count_dict[user_id] >= 2:
+        last, cnt = count_dict[user_id]
+        last_date = last.date()
+        last_time = last.time()
+        today = datetime.today().date()
+        if (
+            last_date >= today and
+            last_time > time(11, 30) and 
+            cnt >= 2
+        ):
+            print(f"Count of Reroll : {count_dict[user_id]}")
             update.message.reply_text(text="滾動不能，每天僅重新滾動兩次", parse_mode=ParseMode.HTML)
         else:
             update.message.reply_text(
                 text=getLunchDecision(), parse_mode=ParseMode.HTML
             )
-        count_dict[user_id] = count_dict[user_id] + 1
+        count_dict[user_id] = (datetime.now(), cnt + 1)
     else:
         print("Count of Reroll : Zero")
-        count_dict[user_id] = 1
+        count_dict[user_id] = (datetime.now(), 1)
         update.message.reply_text(text=getLunchDecision(), parse_mode=ParseMode.HTML)
 
 
-def traffic(update, context):
+def traffic(update: Update, context: CallbackContext):
     print(" Function : " + str(inspect.currentframe().f_code.co_name))
     content = grep_traffic()
     update.message.reply_text(text=content, parse_mode=ParseMode.HTML)
 
 
-def showlist(update, context):
+def showlist(update: Update, context: CallbackContext):
     print(" Function : " + str(inspect.currentframe().f_code.co_name))
     msg = getTxt()
     update.message.reply_text(msg)
