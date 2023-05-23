@@ -1,4 +1,4 @@
-requests==2.23.0
+requests==2.31.0
 python-telegram-bot==12.7
 pytz
 beautifulsoup4
